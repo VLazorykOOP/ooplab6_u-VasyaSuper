@@ -1,146 +1,124 @@
 ﻿#include "Lab6Example.h"
 #include <iostream>
+
+//Створити дві ієрархії класів з віртуальним та без віртуального успадкуванням з елементами даних класів у кожному класі.
+//Схема успадкування на рисунку за варіантами.
+//Створити об’єкти похідних класів з віртуальним та без віртуального успадкуванням.
+//Вивести розміри об’єктів даних класів.
+//Без віртуального успадкування
+
 namespace SpaceExample1 {
-    ///Задача. Створити дві ієрархії класів без віртуального та з віртуальним спадкуванням, 
-    // з елементами даних класів у кожному класі. Схема успадкування на рисунку за варіантами. 
-    // Створити об’єкти похідних класів з віртуальним та без віртуального успадкуванням. 
-    // Вивести розміри об’єктів даних класів.
-    ///
-    class Base
+    class A
     {
     protected:
-        int dat;
-        double a[5] = { 10,1,7,1,9 };
+        int a1;
     public:
-        Base() : dat(1) {}
-        Base(int d) : dat(d) {}
+        A() : a1(1) {}
+        A(int a) : a1(a) {}
     };
   
-    class D1 : protected Base
+    class B : protected A
+    {
+    protected:
+        int b1;
+    public:
+        B() : b1(1) {}
+        B(int b) : b1(b) {}
+        B(int b, int a) : A(a), b1(b) {}
+    };
+
+    class C : protected A, protected B
+    {
+    protected:
+        int c1;
+    public:
+        C() : c1(1) {}
+        C(int c) : c1(c) {}
+        C(int a, int a1, int b1, int c) : A(a), B(a1, b1), c1(c) {}
+    };
+
+    class D : protected B
     {
     protected:
         int d1;
     public:
-        D1() : d1(1) {}
-        D1(int d) : d1(d) {}
-        D1(int d, int dt) : Base(dt), d1(d) {}
+        D() : d1(1) {}
+        D(int d) : d1(d) {}
+        D(int a, int b, int d) : B(a, b), d1(d) {}
     };
 
-    class D2 : protected Base
+    class E : protected C, protected D
     {
     protected:
-        double d2;
+        int e1;
     public:
-        D2() : d2(1) {}
-        D2(int d) : d2(d) {}
-        D2(int d, double dt) : Base(d), d2(dt) {}
+        E() : e1(1) {}
+        E(int e) : e1(e) {}
+        E(int a, int b, int c, int d, int a1, int b1, int c1, int e) : C(a, b, c, d), D(a1, b1, c1), e1(e) {}
+
     };
 
-    class D12 : protected D1, protected D2
+ //З віртуальним успадкуванням
+    class BV : protected virtual A
     {
     protected:
-        double dt;
+        int b1;
     public:
-        D12() : dt(1) {}
-        D12(int d) : dt(d) {}
-        D12(int a, int b, int c, double d, int e) : D1(a, b), D2(c, d), dt(e) {}
+        BV() : b1(1) {}
+        BV(int b) : b1(b) {}
+        BV(int b, int a) : A(a), b1(b) {}
     };
 
-    class R : protected D12, protected Base
+    class CV : protected virtual A, protected virtual BV
     {
     protected:
-        double dt;
+        int c1;
     public:
-        R() : dt(1) {}
-        R(int d) : dt(d) {}
-        R(int a, int b, int c, double d, int e) : D12(a, b, c, d, e), Base::Base(a), dt(e + 1.) {}
-        void showDat()
-        {
-            std::cout << "dat =? Error C2385 ambiguous access level dat " << std::endl;
-            /// << dat << std::endl;
-          //  std::cout << "B12VV::D1V::Base::dat =  " << D12::D1::Base::dat << std::endl;
-           // std::cout << "B12VV::D1V::Base::dat =  " << Base::dat << std::endl;
-      //      std::cout << "B12VV::D1V::Base::dat =  " << D12::D2::Base::dat << std::endl;
-        }
+        CV() : c1(1) {}
+        CV(int c) : c1(c) {}
+        CV(int a, int a1, int b1, int c) : A(a), BV(a1, b1), c1(c) {}
     };
-    
-    //
-    //  virtual
-    //
-    class D1V : virtual protected Base
+
+    class DV : protected virtual BV
     {
     protected:
         int d1;
     public:
-        D1V() : d1(1) {}
-        D1V(int d) : d1(d) {}
-        D1V(int d, int dt) : Base(dt), d1(d) {}
+        DV() : d1(1) {}
+        DV(int d) : d1(d) {}
+        DV(int a, int b, int d) : BV(a, b), d1(d) {}
     };
 
-    class D2V : virtual protected Base
+    class EV : protected virtual CV, protected virtual DV
     {
     protected:
-        double d2;
+        int e1;
     public:
-        D2V() : d2(1) {}
-        D2V(int d) : d2(d) {}
-        D2V(int d, double dt) : Base(d), d2(dt) {}
-    };
+        EV() : e1(1) {}
+        EV(int e) : e1(e) {}
+        EV(int a, int b, int c, int d, int a1, int b1, int c1, int e) : CV(a, b, c, d), DV(a1, b1, c1), e1(e) {}
 
-    class D12VV : virtual protected D1V, virtual public D2V
-    {
-    protected:
-        double dt;
-    public:
-        D12VV() : dt(1) {}
-        D12VV(int d) : dt(d) {}
-        D12VV(int a, int b, int c, double d, int e) : D1V(a, b), D2V(c, d), dt(e) {}
-    };
-
-    class RV3 : virtual protected D12VV, virtual public Base
-    {
-    protected:
-        double dt;
-    public:
-        RV3() : dt(1) {}
-        RV3(int d) : dt(d) {}
-        RV3(int a, int b, int c, double d, int e) : D12VV(a, b, c, d, e), Base::Base(a + 1),
-            dt(e + 1.0) {}
-        void showDat()
-        {
-            std::cout << "  dat =  " << dat << std::endl;
-            std::cout << "B12VV::D1V::Base::dat =  " << D12VV::D1V::Base::dat << std::endl;
-            std::cout << "B12VV::D1V::Base::dat =  " << Base::dat << std::endl;
-            std::cout << "B12VV::D1V::Base::dat =  " << D12VV::D2V::Base::dat << std::endl;
-        }
     };
 
     int mainExample1()
     {
         std::cout << " Example1  \n";
-        R a, b(1, 2, 3, 4.5, 5);
-        RV3 av, bv(1, 2, 3, 4.5, 5);
+        E a, b(1, 2, 3, 4, 5, 6, 7 , 8);
+        EV av, bv(11, 22, 33, 44, 55, 66, 77, 88);
 
-        std::cout << "Test !\n";
-        std::cout << "Size for Base " << sizeof(Base) << std::endl;
-        std::cout << "Size for D1 " << sizeof(D1) << std::endl;
-        std::cout << "Size for D2 " << sizeof(D2) << std::endl;
-        std::cout << "Size for D12 " << sizeof(D12) << std::endl;
-        std::cout << "Size for R " << sizeof(R) << std::endl;
+        std::cout << "Test no virtual !\n";
+        std::cout << "Size for A " << sizeof(A) << std::endl;
+        std::cout << "Size for B " << sizeof(B) << std::endl;
+        std::cout << "Size for C " << sizeof(C) << std::endl;
+        std::cout << "Size for D " << sizeof(D) << std::endl;
+        std::cout << "Size for E " << sizeof(E) << std::endl;
+        std::cout << "Virtual " << std::endl;
+        std::cout << "Size for A " << sizeof(A) << std::endl;
+        std::cout << "Size for BV " << sizeof(BV) << std::endl;
+        std::cout << "Size for CV " << sizeof(CV) << std::endl;
+        std::cout << "Size for DV " << sizeof(DV) << std::endl;
+        std::cout << "Size for EV " << sizeof(EV) << std::endl;
 
-        std::cout << "Size for Base " << sizeof(Base) << std::endl;
-        std::cout << "Size for D1V " << sizeof(D1V) << std::endl;
-        std::cout << "Size for D2V " << sizeof(D2V) << std::endl;
-        std::cout << "Size for D12VV " << sizeof(D12VV) << std::endl;
-        std::cout << "Size for RV3 " << sizeof(RV3) << std::endl;
-
-        std::cout << "Size for object class R " << sizeof(R) << " or  "
-            << sizeof(a) << " or  " << sizeof(b) << std::endl;
-        std::cout << "Size for object class RV3 " << sizeof(RV3) << " or  "
-            << sizeof(av) << " or  " << sizeof(bv) << std::endl;
-        b.showDat();
-        bv.showDat();
         return 0;
     }
-
 }

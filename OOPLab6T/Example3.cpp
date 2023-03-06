@@ -2,92 +2,72 @@
 #include <iostream>
 #include <string>
 using namespace std;
+
+
 namespace SpaceExample3 {
-    // MultipleiInherance.cpp 
-// Ієрархія типів складається з сутностей: 
-// машина, пасажирський транспорт і автобус.
-//
+    //Ієрархія типів складається з сутностей: людина, батько, мати, дочка.
 
-
-    class Car {
+    // Базовий клас "Людина"
+    class Person {
     protected:
-        string marka;
-        float power;
-        int numberOfWheels;
+        string name;
+        int age;
     public:
-        Car() : marka("Neoplan"), power(5.2f), numberOfWheels(6) {
-        }
-        Car(string m, float p, int nw) : marka(m), power(p), numberOfWheels(nw) {
-        }
-        string getMarka() { return marka; }
-        void setMarka(string m) { marka = m; }
-        float getPower() {
-            return power;
-        }
-        void setPower(float p) {
-            power = p;
-        }
-        int getNumberOfWheels() {
-            return numberOfWheels;
-        }
-        void setNumberOfWheels(int n) {
-            numberOfWheels = n;
-        }
-        string toString() {
-            string r = marka + "\t" + to_string(power) + "\t" + to_string(numberOfWheels) + "\t";
-            return r;
+        Person(string n, int a) : name(n), age(a) {}
+        void print() {
+            cout << "Name: " << name << ", Age: " << age << endl;
         }
     };
 
-    class PassengerTransport {
-    protected:
-        int flightNumber;
-        int numberOfPassengerSeats;
+    // Похідний клас "Батько"
+    class Father : public Person {
+    private:
+        int numberOfChildren;
     public:
-        PassengerTransport() : flightNumber(101), numberOfPassengerSeats(45) {}
-        PassengerTransport(int f, int n) : flightNumber(f), numberOfPassengerSeats(n) {}
-        int  getFlightNumber() { return flightNumber; }
-        void setFlightNumber(int f) { flightNumber = f; }
-        int getNumberOfPassengerSeats() { return numberOfPassengerSeats; }
-        void setnumberOfPassengerSeats(int n) { numberOfPassengerSeats = n; }
-        string toString() {
-            string r = to_string(flightNumber) + "\t" + to_string(numberOfPassengerSeats) + "\t";
-            return r;
-        }
-    };
-    class AutoBus : public Car, public  PassengerTransport
-    {
-        string busRoute;
-    public:
-        AutoBus() : busRoute("Kyiv-Chernivci") {}
-        AutoBus(string m, float p, int nw, int f, int n, string bs)
-            : Car(m, p, nw), PassengerTransport(f, n), busRoute(bs) {}
-        string getbusRoute() {
-            return busRoute;
-        }
-        void setbusRoute(string bs) { busRoute = bs; }
-
-        string toString() {
-            string r = Car::toString() + PassengerTransport::toString() + busRoute;
-            return r;
+        Father(string n, int a, int c) : Person(n, a), numberOfChildren(c) {}
+        void print() {
+            cout << "Father: ";
+            Person::print();
+            cout << "Number of Children: " << numberOfChildren << endl;
         }
     };
 
+    // Похідний клас "Мати"
+    class Mother : public Person {
+    private:
+        string occupation;
+    public:
+        Mother(string n, int a, string o) : Person(n, a), occupation(o) {}
+        void print() {
+            cout << "Mother: ";
+            Person::print();
+            cout << "Occupation: " << occupation << endl;
+        }
+    };
+
+    // Похідний клас "Дочка"
+    class Daughter : public Person {
+    private:
+        string school;
+    public:
+        Daughter(string n, int a, string s) : Person(n, a), school(s) {}
+        void print() {
+            cout << "Daughter: ";
+            Person::print();
+            cout << "School: " << school << endl;
+        }
+    };
+   
     int mainExample3()
     {
-        AutoBus def;
-        AutoBus lvCh("Iveko", 6.2f, 6, 301, 40, "Lviv-Chernivci");
-        AutoBus* pVnCn = new AutoBus();
-        pVnCn->setMarka("Ikarus");
-        pVnCn->setPower(7.2f);
-        pVnCn->setNumberOfWheels(6);
-        pVnCn->setFlightNumber(403);
-        pVnCn->setnumberOfPassengerSeats(42);
-        pVnCn->setbusRoute("Vinnicya-Chernivci");
+        Father f("John", 40, 2);
+        Mother m("Mary", 35, "Teacher");
+        Daughter d("Sarah", 10, "High School");
 
-        cout << def.toString() << endl;
-        cout << lvCh.toString() << endl;
-        cout << pVnCn->toString() << endl;
+        f.print();
+        m.print();
+        d.print();
+
         return 0;
     }
 
